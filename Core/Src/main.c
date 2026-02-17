@@ -47,7 +47,12 @@ DMA_HandleTypeDef hdma_adc1;
 TIM_HandleTypeDef htim15;
 
 /* USER CODE BEGIN PV */
-volatile uint16_t adc_buf[6];
+/*
+ * CRITICAL: adc_buf MUST be in D2 SRAM (0x30000000) because DMA1 lives in the
+ * D2 bus-matrix domain and CANNOT access D1 AXI SRAM (0x24000000 / RAM_D1).
+ * Without this attribute the linker places it in .bss → RAM_D1 → DMA writes go nowhere.
+ */
+volatile uint16_t adc_buf[6] __attribute__((section(".RAM_D2")));
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -218,16 +223,16 @@ static void MX_ADC1_Init(void)
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
   hadc1.Init.Resolution = ADC_RESOLUTION_16B;
-  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;        /* 6 channels */
+  hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;       /* end of sequence */
   hadc1.Init.LowPowerAutoWait = DISABLE;
   hadc1.Init.ContinuousConvMode = ENABLE;
-  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.NbrOfConversion = 6;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR;
-  hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc1.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
   hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
   hadc1.Init.OversamplingMode = DISABLE;
   hadc1.Init.Oversampling.Ratio = 1;
@@ -244,9 +249,8 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
 
-  /** Configure Regular Channel
-  */
-  sConfig.Channel = ADC_CHANNEL_10;
+  /* Rank 1: IN3  = PA6  = X axis */
+  sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SamplingTime = ADC_SAMPLETIME_387CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -258,16 +262,15 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
 
-  /** Configure Regular Channel
-  */
+  /* Rank 2: IN7  = PA7  = Y axis */
+  sConfig.Channel = ADC_CHANNEL_7;
   sConfig.Rank = ADC_REGULAR_RANK_2;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
   }
 
-  /** Configure Regular Channel
-  */
+  /* Rank 3: IN14 = PA2  = Z axis */
   sConfig.Channel = ADC_CHANNEL_14;
   sConfig.Rank = ADC_REGULAR_RANK_3;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -275,8 +278,7 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
 
-  /** Configure Regular Channel
-  */
+  /* Rank 4: IN15 = PA3  = Rx axis */
   sConfig.Channel = ADC_CHANNEL_15;
   sConfig.Rank = ADC_REGULAR_RANK_4;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -284,8 +286,7 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
 
-  /** Configure Regular Channel
-  */
+  /* Rank 5: IN10 = PC0  = Ry axis */
   sConfig.Channel = ADC_CHANNEL_10;
   sConfig.Rank = ADC_REGULAR_RANK_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -293,80 +294,29 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
 
-  /** Configure Regular Channel
-  */
+  /* Rank 6: IN11 = PC1  = Rz axis */
   sConfig.Channel = ADC_CHANNEL_11;
   sConfig.Rank = ADC_REGULAR_RANK_6;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
   }
+
   /* USER CODE BEGIN ADC1_Init 2 */
 
   /*
-   * CubeMX generated incorrect ADC config (ScanConvMode=DISABLE, NbrOfConversion=1,
-   * wrong channel assignments). We re-initialize here with the correct settings.
-   * 6 channels in scan mode with DMA circular:
-   *   Rank1=IN3 (PA6), Rank2=IN7 (PA7), Rank3=IN14 (PA2),
-   *   Rank4=IN15 (PA3), Rank5=IN10 (PC0), Rank6=IN11 (PC1)
+   * STM32H7 CRITICAL: PCSEL register must pre-select all channels before
+   * starting conversions. Without this, the ADC samples floating inputs.
+   * Bits correspond directly to channel numbers (bit N = channel N).
    */
-
-  hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
-  hadc1.Init.Resolution = ADC_RESOLUTION_16B;
-  hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
-  hadc1.Init.LowPowerAutoWait = DISABLE;
-  hadc1.Init.ContinuousConvMode = ENABLE;
-  hadc1.Init.NbrOfConversion = 6;
-  hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR;
-  hadc1.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
-  hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
-  hadc1.Init.OversamplingMode = DISABLE;
-  if (HAL_ADC_Init(&hadc1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  ADC_ChannelConfTypeDef sConfigAdc = {0};
-  sConfigAdc.SamplingTime = ADC_SAMPLETIME_387CYCLES_5;
-  sConfigAdc.SingleDiff = ADC_SINGLE_ENDED;
-  sConfigAdc.OffsetNumber = ADC_OFFSET_NONE;
-  sConfigAdc.Offset = 0;
-  sConfigAdc.OffsetSignedSaturation = DISABLE;
-
-  /* Rank 1: PA6 = ADC1_IN3 → Axis X */
-  sConfigAdc.Channel = ADC_CHANNEL_3;
-  sConfigAdc.Rank = ADC_REGULAR_RANK_1;
-  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
-
-  /* Rank 2: PA7 = ADC1_IN7 → Axis Y */
-  sConfigAdc.Channel = ADC_CHANNEL_7;
-  sConfigAdc.Rank = ADC_REGULAR_RANK_2;
-  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
-
-  /* Rank 3: PA2 = ADC1_IN14 → Axis Z */
-  sConfigAdc.Channel = ADC_CHANNEL_14;
-  sConfigAdc.Rank = ADC_REGULAR_RANK_3;
-  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
-
-  /* Rank 4: PA3 = ADC1_IN15 → Axis Rx */
-  sConfigAdc.Channel = ADC_CHANNEL_15;
-  sConfigAdc.Rank = ADC_REGULAR_RANK_4;
-  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
-
-  /* Rank 5: PC0 = ADC1_IN10 → Axis Ry */
-  sConfigAdc.Channel = ADC_CHANNEL_10;
-  sConfigAdc.Rank = ADC_REGULAR_RANK_5;
-  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
-
-  /* Rank 6: PC1 = ADC1_IN11 → Axis Rz */
-  sConfigAdc.Channel = ADC_CHANNEL_11;
-  sConfigAdc.Rank = ADC_REGULAR_RANK_6;
-  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
+  /* On STM32H723, ADC_TypeDef names this field PCSEL_RES0 (shared with ADC3
+   * reservation), but it is the PCSEL register at offset 0x1C for ADC1/2. */
+  ADC1->PCSEL_RES0 |= (1UL << 3)  /* IN3  = PA6 */
+                    | (1UL << 7)  /* IN7  = PA7 */
+                    | (1UL << 10) /* IN10 = PC0 */
+                    | (1UL << 11) /* IN11 = PC1 */
+                    | (1UL << 14) /* IN14 = PA2 */
+                    | (1UL << 15);/* IN15 = PA3 */
 
   /* USER CODE END ADC1_Init 2 */
 
@@ -533,6 +483,28 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     JOYSTICK_SendReport();
   }
 }
+
+/*
+ * DCache invalidation callbacks — belt-and-suspenders defence.
+ * RAM_D2 is already marked non-cacheable by MPU_Config (Region 1),
+ * so these are normally no-ops. If the MPU were ever misconfigured,
+ * these callbacks ensure the CPU sees fresh DMA data.
+ */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+  if (hadc->Instance == ADC1)
+  {
+    SCB_InvalidateDCache_by_Addr((uint32_t *)adc_buf, sizeof(adc_buf));
+  }
+}
+
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
+{
+  if (hadc->Instance == ADC1)
+  {
+    SCB_InvalidateDCache_by_Addr((uint32_t *)adc_buf, sizeof(adc_buf));
+  }
+}
 /* USER CODE END 4 */
 
  /* MPU Configuration */
@@ -544,8 +516,7 @@ void MPU_Config(void)
   /* Disables the MPU */
   HAL_MPU_Disable();
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
+  /* Region 0: default — whole 4GB no-access background region */
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER0;
   MPU_InitStruct.BaseAddress = 0x0;
@@ -557,11 +528,28 @@ void MPU_Config(void)
   MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /*
+   * Region 1: RAM_D2 (0x30000000, 32K) — non-cacheable, non-bufferable.
+   * DMA1 writes adc_buf[] here. The D-Cache must NOT cache this region or
+   * the CPU will read stale values. TEX=1, C=0, B=0 = Normal, non-cacheable.
+   */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
+  MPU_InitStruct.BaseAddress = 0x30000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_32KB;
+  MPU_InitStruct.SubRegionDisable = 0x00;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
   /* Enables the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-
 }
 
 /**
