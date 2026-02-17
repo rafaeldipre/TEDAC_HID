@@ -263,11 +263,23 @@ static const uint16_t btn_pin[69] = {
 void JOYSTICK_SendReport(void)
 {
   uint8_t report[21];
+  const int32_t adc_max = 1023; /* ADC_RESOLUTION_10B */
 
-  /* Pack 6 axes: convert unsigned 16-bit ADC to signed 16-bit */
+  /* Pack 6 axes: scale ADC raw value to signed HID range (-32768..32767) */
   for (uint8_t i = 0; i < 6; i++)
   {
-    int16_t val = (int16_t)((int32_t)adc_buf[i] - 32768);
+    int32_t raw = adc_buf[i];
+    if (raw < 0)
+    {
+      raw = 0;
+    }
+    else if (raw > adc_max)
+    {
+      raw = adc_max;
+    }
+
+    int32_t scaled = ((raw * 65535) / adc_max) - 32768;
+    int16_t val = (int16_t)scaled;
     report[i * 2]     = (uint8_t)(val & 0xFF);
     report[i * 2 + 1] = (uint8_t)((val >> 8) & 0xFF);
   }
