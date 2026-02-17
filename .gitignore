@@ -1,0 +1,29 @@
+# Claude Code
+.claude/
+
+# Prompt file
+Prompt.txt
+prompt.txt
+
+# PDF generator scripts (keep PDFs, exclude generators)
+generate_pinout_pdf.py
+generate_pinout_pdf_en.py
+
+# STM32CubeIDE build artifacts
+/Debug/
+/Release/
+STM32CubeIDE/Debug/
+STM32CubeIDE/Release/
+
+# Eclipse / STM32CubeIDE project-specific
+.settings/
+.cproject
+.launch
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Backup files
+*.bak
+*~

@@ -1,0 +1,217 @@
+================================================================================
+  MAPEO DE PINES — FK723M1-ZGT6 V1.0 → DIPRE_HID (TEDAC AH-64D)
+  Placa: EC Buying FK723M1-ZGT6 V1.0  |  MCU: STM32H723ZGT6
+================================================================================
+
+NOTA: Los pines en la placa estan etiquetados de forma abreviada (ej: "E0" = PE0,
+"B7" = PB7, "A6" = PA6). Las etiquetas "G" sueltas son pines GND. Los pines
+3V3 y 5V son alimentacion. Vref es el voltaje de referencia del ADC.
+
+Conexion de botones: un terminal del boton/switch a GND, el otro al pin GPIO.
+Los GPIO estan configurados con pull-up interno, logica invertida (presionado = LOW).
+
+Conexion de ejes analogicos: potenciometro con VCC(3.3V) y GND en los extremos,
+el cursor (wiper) al pin ADC. Rango 0-3.3V.
+
+================================================================================
+                     USB (NO CONECTAR — usa el conector USB de la placa)
+================================================================================
+  PA11 (A11) → USB D-  (conectado internamente al conector USB de la placa)
+  PA12 (A12) → USB D+  (conectado internamente al conector USB de la placa)
+
+================================================================================
+                     6 EJES ANALOGICOS (ADC1 — pines de la placa)
+================================================================================
+  Eje  | Pin STM32 | Etiqueta placa | Canal ADC | Eje HID | Funcion TEDAC
+  -----|-----------|----------------|-----------|---------|------------------
+   1   |   PA6     |      A6        | ADC1_IN3  |    X    | Eje X
+   2   |   PA7     |      A7        | ADC1_IN7  |    Y    | Eje Y
+   3   |   PA2     |      A2        | ADC1_IN14 |    Z    | Eje Z
+   4   |   PA3     |      A3        | ADC1_IN15 |    Rx   | Eje Rx
+   5   |   PC0     |      C0        | ADC1_IN10 |    Ry   | Eje Ry
+   6   |   PC1     |      C1        | ADC1_IN11 |    Rz   | Eje Rz
+
+  Cableado de cada potenciometro:
+    Pin 1 (extremo) → GND
+    Pin 2 (cursor/wiper) → Pin ADC de la placa (A6, A7, A2, A3, C0 o C1)
+    Pin 3 (extremo) → 3V3
+
+================================================================================
+         FILA SUPERIOR DE PINES (vista frontal, conector USB a la izquierda)
+================================================================================
+  La fila superior de la placa tiene estas etiquetas (izquierda a derecha):
+
+  3V3  5V  A11  C1   A1   A2   G   C2C  A4   A6   C4   B0   B2   F12  F14  G0
+  E7   E8   E10  E12  E14  E15  B14  B12  D8   D10  F10  F8   F9   D12
+
+  Nota: Las posiciones exactas pueden variar ligeramente segun lote.
+
+  Fila inferior superior (segunda fila):
+  3V3  5V  A12  C0   (Vref)  A0   G   C3C  A7   C5   B1   B3   F13  F15  G9
+  E9   E11  E13  B15  B10  B13  D9   D11  F6   F10  D9   D11  F6   F7
+
+================================================================================
+         FILA INFERIOR DE PINES (vista frontal)
+================================================================================
+  Fila inferior (izquierda a derecha):
+
+  G  G  A10  C13  F1  (...)  F4  BAT  E5   E0  B7  B5  B3  G14  G10  D7
+  D5   D3   C10   D1   C12   A8   C8   C6   C7   G7   G4
+
+  Fila inferior segunda:
+  G  G  A9  F0  F2  F3  F5  E6  E4  E2  B9  E1  B6  B4  G15  G13  G11
+  G9   G6   D4   D2   A15   D0   C11   C9   C7   G8   G5   G3   D15
+
+================================================================================
+                     69 BOTONES DIGITALES — MAPEO COMPLETO
+================================================================================
+  Todos los botones se conectan entre el pin GPIO y GND.
+  Pull-up interno activado. Presionar = contacto a GND = GPIO_PIN_RESET = bit=1.
+
+  ---- GRUPO TDU (Tactical Display Unit) — 21 botones ----
+
+  BTN# | Pin STM32 | Etiqueta placa | Nombre CubeMX         | Funcion TEDAC
+  -----|-----------|----------------|-----------------------|------------------
+   01  |   PE0     |      E0        | BTN_01_TDU_TAD        | TDU TAD
+   02  |   PE1     |      E1        | BTN_02_TDU_FCR        | TDU FCR
+   03  |   PE2     |      E2        | BTN_03_TDU_PNV        | TDU PNV
+   04  |   PE3     |      E3        | BTN_04_TDU_GS         | TDU GS
+   05  |   PE4     |      E4        | BTN_05_TDU_AZ         | TDU AZ
+   06  |   PE5     |      E5        | BTN_06_TDU_SW6        | TDU SW6
+   07  |   PE6     |      E6        | BTN_07_TDU_SW7        | TDU SW7
+   08  |   PE7     |      E7        | BTN_08_TDU_LMC        | TDU LMC
+   09  |   PE8     |      E8        | BTN_09_TDU_CAGE       | TDU CAGE
+   10  |   PE9     |      E9        | BTN_10_TDU_RF_UP      | TDU RF UP
+   11  |   PE10    |      E10       | BTN_11_TDU_RF_DOWN    | TDU RF DOWN
+   12  |   PE11    |      E11       | BTN_12_TDU_EL_UP      | TDU EL UP
+   13  |   PE12    |      E12       | BTN_13_TDU_EL_DOWN    | TDU EL DOWN
+   14  |   PE13    |      E13       | BTN_14_TDU_SYM_UP     | TDU SYM UP
+   15  |   PE14    |      E14       | BTN_15_TDU_SYM_DOWN   | TDU SYM DOWN
+   16  |   PE15    |      E15       | BTN_16_TDU_BRT_UP     | TDU BRT UP
+   17  |   PD8     |      D8        | BTN_17_TDU_BRT_DOWN   | TDU BRT DOWN
+   18  |   PD9     |      D9        | BTN_18_TDU_COM_UP     | TDU COM UP
+   19  |   PD10    |      D10       | BTN_19_TDU_COM_DOWN   | TDU COM DOWN
+   20  |   PD11    |      D11       | BTN_20_TDU_DAY        | TDU DAY
+   21  |   PD12    |      D12       | BTN_21_TDU_NT         | TDU NT
+
+  ---- GRUPO LHG (Left Hand Grip) — 22 botones ----
+
+  BTN# | Pin STM32 | Etiqueta placa | Nombre CubeMX         | Funcion TEDAC
+  -----|-----------|----------------|-----------------------|------------------
+   22  |   PD0     |      D0        | BTN_22_LHG_SW1        | LHG SW1
+   23  |   PD1     |      D1        | BTN_23_LHG_SW2        | LHG SW2
+   24  |   PD2     |      D2        | BTN_24_LHG_SW3        | LHG SW3
+   25  |   PD3     |      D3        | BTN_25_LHG_SW4        | LHG SW4
+   26  |   PD4     |      D4        | BTN_26_LHG_SW5        | LHG SW5
+   27  |   PD5     |      D5        | BTN_27_LHG_HAT1_UP    | LHG HAT1 UP
+   28  |   PD6     |      D6        | BTN_28_LHG_HAT1_DOWN  | LHG HAT1 DOWN
+   29  |   PD7     |      D7        | BTN_29_LHG_HAT1_LEFT  | LHG HAT1 LEFT
+   30  |   PB0     |      B0        | BTN_30_LHG_HAT1_RIGHT | LHG HAT1 RIGHT
+   31  |   PB1     |      B1        | BTN_31_LHG_HAT2_UP    | LHG HAT2 UP
+   32  |   PB2     |      B2        | BTN_32_LHG_HAT2_DOWN  | LHG HAT2 DOWN
+   33  |   PB3     |      B3        | BTN_33_LHG_HAT2_LEFT  | LHG HAT2 LEFT
+   34  |   PB4     |      B4        | BTN_34_LHG_HAT2_RIGHT | LHG HAT2 RIGHT
+   35  |   PB5     |      B5        | BTN_35_LHG_HAT3_UP    | LHG HAT3 UP
+   36  |   PB6     |      B6        | BTN_36_LHG_HAT3_DOWN  | LHG HAT3 DOWN
+   37  |   PB7     |      B7        | BTN_37_LHG_HAT3_LEFT  | LHG HAT3 LEFT
+   38  |   PB8     |      B8        | BTN_38_LHG_HAT3_RIGHT | LHG HAT3 RIGHT
+   39  |   PB9     |      B9        | BTN_39_LHG_TEMP1_A    | LHG TEMP1 A
+   40  |   PB10    |      B10       | BTN_40_LHG_TEMP1_B    | LHG TEMP1 B
+   41  |   PB11    |      B11       | BTN_41_LHG_TEMP2_A    | LHG TEMP2 A
+   42  |   PB12    |      B12       | BTN_42_LHG_TEMP2_B    | LHG TEMP2 B
+   43  |   PB13    |      B13       | BTN_43_LHG_TEMP3_A    | LHG TEMP3 A
+
+  ---- GRUPO LHG (continuacion) + RHG ----
+
+  BTN# | Pin STM32 | Etiqueta placa | Nombre CubeMX         | Funcion TEDAC
+  -----|-----------|----------------|-----------------------|------------------
+   44  |   PC4     |      C4        | BTN_44_LHG_TEMP3_B    | LHG TEMP3 B
+   45  |   PC5     |      C5        | BTN_45_LHG_3POS_A     | LHG 3POS A
+   46  |   PC6     |      C6        | BTN_46_LHG_3POS_B     | LHG 3POS B
+   47  |   PC7     |      C7        | BTN_47_LHG_PUSH       | LHG PUSH
+
+  ---- GRUPO RHG (Right Hand Grip) — 22 botones ----
+
+  BTN# | Pin STM32 | Etiqueta placa | Nombre CubeMX         | Funcion TEDAC
+  -----|-----------|----------------|-----------------------|------------------
+   48  |   PC8     |      C8        | BTN_48_RHG_SW1        | RHG SW1
+   49  |   PC9     |      C9        | BTN_49_RHG_SW2        | RHG SW2
+   50  |   PC10    |      C10       | BTN_50_RHG_SW3        | RHG SW3
+   51  |   PC11    |      C11       | BTN_51_RHG_SW4        | RHG SW4
+   52  |   PC12    |      C12       | BTN_52_RHG_SW5        | RHG SW5
+   53  |   PC13    |      C13       | BTN_53_RHG_SW6        | RHG SW6
+   54  |   PF0     |      F0        | BTN_54_RHG_SW7        | RHG SW7
+   55  |   PF1     |      F1        | BTN_55_RHG_HAT1_UP    | RHG HAT1 UP
+   56  |   PF2     |      F2        | BTN_56_RHG_HAT1_DOWN  | RHG HAT1 DOWN
+   57  |   PF3     |      F3        | BTN_57_RHG_HAT1_LEFT  | RHG HAT1 LEFT
+   58  |   PF4     |      F4        | BTN_58_RHG_HAT1_RIGHT | RHG HAT1 RIGHT
+   59  |   PF5     |      F5        | BTN_59_RHG_HAT2_UP    | RHG HAT2 UP
+   60  |   PF6     |      F6        | BTN_60_RHG_HAT2_DOWN  | RHG HAT2 DOWN
+   61  |   PG6     |      G6        | BTN_61_RHG_HAT2_LEFT  | RHG HAT2 LEFT
+   62  |   PG7     |      G7        | BTN_62_RHG_HAT2_RIGHT | RHG HAT2 RIGHT
+   63  |   PG8     |      G8        | BTN_63_RHG_TEMP_A     | RHG TEMP A
+   64  |   PG9     |      G9        | BTN_64_RHG_TEMP_B     | RHG TEMP B
+   65  |   PG10    |      G10       | BTN_65_RHG_3POS1_A    | RHG 3POS1 A
+   66  |   PG11    |      G11       | BTN_66_RHG_3POS1_B    | RHG 3POS1 B
+   67  |   PG12    |      G12       | BTN_67_RHG_3POS2_A    | RHG 3POS2 A
+   68  |   PG13    |      G13       | BTN_68_RHG_3POS2_B    | RHG 3POS2 B
+   69  |   PG14    |      G14       | BTN_69_RHG_PUSH       | RHG PUSH
+
+================================================================================
+                     PINES RESERVADOS / NO USAR
+================================================================================
+  Pin STM32 | Etiqueta | Uso
+  ----------|----------|------------------------------------------
+  PA11      |   A11    | USB OTG HS D- (no conectar nada externo)
+  PA12      |   A12    | USB OTG HS D+ (no conectar nada externo)
+  PH0       |   (HSE)  | Cristal 25MHz (interno en la placa)
+  PH1       |   (HSE)  | Cristal 25MHz (interno en la placa)
+  PA13      |   (SWDIO)| Debug SWD (header de 4 pines: 3V3/RST/TX/RX)
+  PA14      |   (SWCLK)| Debug SWD
+
+================================================================================
+                     ALIMENTACION Y GND
+================================================================================
+  - Pines marcados "3V3" → Salida 3.3V regulada (para alimentar potenciometros)
+  - Pines marcados "5V"  → Entrada/salida 5V desde USB
+  - Pines marcados "G"   → GND (hay multiples en ambas filas)
+  - Pin "Vref"           → Voltaje de referencia ADC (conectar a 3.3V o dejar libre)
+  - Pin "BAT"            → Bateria VBAT (no usar)
+
+================================================================================
+                     DIAGRAMA DE CONEXION RAPIDA
+================================================================================
+
+  POTENCIOMETRO (x6):
+                  ┌─────────┐
+    3V3 ─────────┤ Extremo 1│
+                  │          │
+    Pin ADC ─────┤  Cursor  │  → A6, A7, A2, A3, C0, C1
+                  │          │
+    GND ─────────┤ Extremo 2│
+                  └─────────┘
+
+  BOTON/SWITCH (x69):
+                  ┌─────┐
+    Pin GPIO ─────┤     │  → E0..E15, D0..D12, B0..B13, C4..C13,
+                  │ SW  │     F0..F6, G6..G14
+    GND ──────────┤     │
+                  └─────┘
+    (Pull-up interno activado, no se necesita resistencia externa)
+
+================================================================================
+                     RESUMEN POR PUERTO GPIO
+================================================================================
+  Puerto | Pines usados                           | Cantidad | Uso
+  -------|----------------------------------------|----------|-------------
+  PA     | PA2, PA3, PA6, PA7, PA11, PA12         |    6     | 4 ADC + 2 USB
+  PB     | PB0-PB13                               |   14     | 14 botones
+  PC     | PC0, PC1, PC4-PC13                     |   12     | 2 ADC + 10 botones
+  PD     | PD0-PD12                               |   13     | 13 botones
+  PE     | PE0-PE15                               |   16     | 16 botones
+  PF     | PF0-PF6                                |    7     | 7 botones
+  PG     | PG6-PG14                               |    9     | 9 botones
+  -------|----------------------------------------|----------|-------------
+  TOTAL  |                                        |   77     | 6 ADC + 2 USB + 69 BTN
+
+================================================================================
