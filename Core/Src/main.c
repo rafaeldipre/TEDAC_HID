@@ -303,6 +303,71 @@ static void MX_ADC1_Init(void)
   }
   /* USER CODE BEGIN ADC1_Init 2 */
 
+  /*
+   * CubeMX generated incorrect ADC config (ScanConvMode=DISABLE, NbrOfConversion=1,
+   * wrong channel assignments). We re-initialize here with the correct settings.
+   * 6 channels in scan mode with DMA circular:
+   *   Rank1=IN3 (PA6), Rank2=IN7 (PA7), Rank3=IN14 (PA2),
+   *   Rank4=IN15 (PA3), Rank5=IN10 (PC0), Rank6=IN11 (PC1)
+   */
+
+  hadc1.Instance = ADC1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
+  hadc1.Init.Resolution = ADC_RESOLUTION_16B;
+  hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
+  hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
+  hadc1.Init.LowPowerAutoWait = DISABLE;
+  hadc1.Init.ContinuousConvMode = ENABLE;
+  hadc1.Init.NbrOfConversion = 6;
+  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR;
+  hadc1.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
+  hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
+  hadc1.Init.OversamplingMode = DISABLE;
+  if (HAL_ADC_Init(&hadc1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  ADC_ChannelConfTypeDef sConfigAdc = {0};
+  sConfigAdc.SamplingTime = ADC_SAMPLETIME_387CYCLES_5;
+  sConfigAdc.SingleDiff = ADC_SINGLE_ENDED;
+  sConfigAdc.OffsetNumber = ADC_OFFSET_NONE;
+  sConfigAdc.Offset = 0;
+  sConfigAdc.OffsetSignedSaturation = DISABLE;
+
+  /* Rank 1: PA6 = ADC1_IN3 → Axis X */
+  sConfigAdc.Channel = ADC_CHANNEL_3;
+  sConfigAdc.Rank = ADC_REGULAR_RANK_1;
+  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
+
+  /* Rank 2: PA7 = ADC1_IN7 → Axis Y */
+  sConfigAdc.Channel = ADC_CHANNEL_7;
+  sConfigAdc.Rank = ADC_REGULAR_RANK_2;
+  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
+
+  /* Rank 3: PA2 = ADC1_IN14 → Axis Z */
+  sConfigAdc.Channel = ADC_CHANNEL_14;
+  sConfigAdc.Rank = ADC_REGULAR_RANK_3;
+  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
+
+  /* Rank 4: PA3 = ADC1_IN15 → Axis Rx */
+  sConfigAdc.Channel = ADC_CHANNEL_15;
+  sConfigAdc.Rank = ADC_REGULAR_RANK_4;
+  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
+
+  /* Rank 5: PC0 = ADC1_IN10 → Axis Ry */
+  sConfigAdc.Channel = ADC_CHANNEL_10;
+  sConfigAdc.Rank = ADC_REGULAR_RANK_5;
+  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
+
+  /* Rank 6: PC1 = ADC1_IN11 → Axis Rz */
+  sConfigAdc.Channel = ADC_CHANNEL_11;
+  sConfigAdc.Rank = ADC_REGULAR_RANK_6;
+  HAL_ADC_ConfigChannel(&hadc1, &sConfigAdc);
+
   /* USER CODE END ADC1_Init 2 */
 
 }
