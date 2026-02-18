@@ -166,6 +166,16 @@ SECTIONS
     . = ALIGN(8);
   } >RAM_D1
 
+  /* D2 SRAM: accesible por DMA1/DMA2. Usado para adc_buf[].
+   * NOLOAD: no necesita inicializacion desde Flash en startup. */
+  .RAM_D2 (NOLOAD) :
+  {
+    . = ALIGN(4);
+    *(.RAM_D2)
+    *(.RAM_D2.*)
+    . = ALIGN(4);
+  } >RAM_D2
+
   /* Remove information from the standard libraries */
   /DISCARD/ :
   {
