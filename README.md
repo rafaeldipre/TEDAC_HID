@@ -13,10 +13,11 @@ This project provides the **electronics and firmware** for the incredible physic
 
 ## Features
 
-- **69 digital buttons** organized in 3 groups:
-  - **TDU** (Tactical Display Unit) — 21 buttons
+- **72 digital buttons** organized in 3 groups:
+  - **TDU** (Tactical Display Unit) — 21 buttons (includes BTN 70 TDU Off)
   - **LHG** (Left Hand Grip) — 26 buttons
   - **RHG** (Right Hand Grip) — 22 buttons
+  - **Spare** — 2 reserve inputs (BTN 71–72)
 - **6 analog axes** (16-bit signed, -32768 to +32767):
   - X, Y, Z, Rx, Ry, Rz
 - **USB Custom HID** with no Report ID for maximum DCS World compatibility
@@ -26,21 +27,27 @@ This project provides the **electronics and firmware** for the incredible physic
 
 ## Pin Mapping
 
-Detailed pin mapping documents are included in both English and Spanish:
+Full pin assignment table: [`PINOUT.md`](PINOUT.md)
 
-- `PINOUT_FK723M1-ZGT6_EN.pdf` — English version
-- `PINOUT_FK723M1-ZGT6.pdf` — Spanish version
+### Analog Axes (ADC1 — DMA circular)
 
-### Analog Axes (ADC)
+| Axis | STM32 Pin | ADC1 Channel | HID Axis |
+|------|-----------|--------------|----------|
+| 1    | PA6       | CH3          | X        |
+| 2    | PA7       | CH7          | Y        |
+| 3    | PA2       | CH14         | Z        |
+| 4    | PA3       | CH15         | Rx       |
+| 5    | PC0       | CH10         | Ry       |
+| 6    | PC1       | CH11         | Rz       |
 
-| Axis | STM32 Pin | Board Label | HID Axis |
-|------|-----------|-------------|----------|
-| 1    | PA6       | A6          | X        |
-| 2    | PA7       | A7          | Y        |
-| 3    | PA2       | A2          | Z        |
-| 4    | PA3       | A3          | Rx       |
-| 5    | PC0       | C0          | Ry       |
-| 6    | PC1       | C1          | Rz       |
+### Digital Buttons — quick reference
+
+| Group | Buttons  | GPIO Port(s)       |
+|-------|----------|--------------------|
+| TDU   | 01–21    | GPIOE, GPIOD       |
+| LHG   | 22–47    | GPIOD, GPIOB, GPIOC|
+| RHG   | 48–70    | GPIOC, GPIOF, GPIOG|
+| Spare | 71–72    | GPIOF (PF7, PF8)   |
 
 ### Wiring
 
