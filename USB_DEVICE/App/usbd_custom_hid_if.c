@@ -257,8 +257,14 @@ static const uint16_t btn_pin[72] = {
 
 void JOYSTICK_SendReport(void)
 {
-  uint8_t report[21];
+  static uint8_t report[21];
   const int32_t adc_max = 1023; /* ADC_RESOLUTION_10B */
+
+  /* Skip if USB endpoint is busy — next timer tick will send fresh values */
+  USBD_CUSTOM_HID_HandleTypeDef *hhid =
+      (USBD_CUSTOM_HID_HandleTypeDef *)hUsbDeviceHS.pClassData;
+  if (hhid == NULL || hhid->state == CUSTOM_HID_BUSY)
+    return;
 
   /* Pack 6 axes: scale ADC raw value to signed HID range (-32768..32767) */
   for (uint8_t i = 0; i < 6; i++)
