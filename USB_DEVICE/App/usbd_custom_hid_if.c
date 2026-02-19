@@ -109,15 +109,20 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_HS[USBD_CUSTOM_HID_REPORT_DES
   0x95, 0x06,        //   Report Count (6)
   0x81, 0x02,        //   Input (Data, Var, Abs)
 
-  // 72 buttons (72 bits = 9 bytes, no padding needed)
+  // 69 buttons
   0x05, 0x09,        //   Usage Page (Button)
   0x19, 0x01,        //   Usage Minimum (1)
-  0x29, 0x48,        //   Usage Maximum (72)
+  0x29, 0x45,        //   Usage Maximum (69)
   0x15, 0x00,        //   Logical Minimum (0)
   0x25, 0x01,        //   Logical Maximum (1)
   0x75, 0x01,        //   Report Size (1)
-  0x95, 0x48,        //   Report Count (72)
+  0x95, 0x45,        //   Report Count (69)
   0x81, 0x02,        //   Input (Data, Var, Abs)
+
+  // 3-bit padding to align to byte boundary
+  0x75, 0x01,        //   Report Size (1)
+  0x95, 0x03,        //   Report Count (3)
+  0x81, 0x01,        //   Input (Const)
 
   /* USER CODE END 1 */
   0xC0               /*     END_COLLECTION             */
@@ -222,7 +227,7 @@ static int8_t CUSTOM_HID_OutEvent_HS(uint8_t event_idx, uint8_t state)
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
-static const GPIO_TypeDef* btn_port[72] = {
+static const GPIO_TypeDef* btn_port[69] = {
   GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE,  // BTN 01-08
   GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE,  // BTN 09-16
   GPIOD, GPIOD, GPIOD, GPIOD, GPIOD, GPIOD, GPIOD, GPIOD,  // BTN 17-24
@@ -231,10 +236,10 @@ static const GPIO_TypeDef* btn_port[72] = {
   GPIOB, GPIOB, GPIOB, GPIOC, GPIOC, GPIOC, GPIOC, GPIOC,  // BTN 41-48
   GPIOC, GPIOC, GPIOC, GPIOC, GPIOC, GPIOF, GPIOF, GPIOF,  // BTN 49-56
   GPIOF, GPIOF, GPIOF, GPIOF, GPIOG, GPIOG, GPIOG, GPIOG,  // BTN 57-64
-  GPIOG, GPIOG, GPIOG, GPIOG, GPIOG, GPIOG, GPIOF, GPIOF   // BTN 65-72
+  GPIOG, GPIOG, GPIOG, GPIOG, GPIOG                         // BTN 65-69
 };
 
-static const uint16_t btn_pin[72] = {
+static const uint16_t btn_pin[69] = {
   GPIO_PIN_0,  GPIO_PIN_1,  GPIO_PIN_2,  GPIO_PIN_3,   // BTN 01-04 (PE0-PE3)
   GPIO_PIN_4,  GPIO_PIN_5,  GPIO_PIN_6,  GPIO_PIN_7,   // BTN 05-08 (PE4-PE7)
   GPIO_PIN_8,  GPIO_PIN_9,  GPIO_PIN_10, GPIO_PIN_11,  // BTN 09-12 (PE8-PE11)
@@ -252,7 +257,7 @@ static const uint16_t btn_pin[72] = {
   GPIO_PIN_3,  GPIO_PIN_4,  GPIO_PIN_5,  GPIO_PIN_6,   // BTN 57-60 (PF3-PF6)
   GPIO_PIN_6,  GPIO_PIN_7,  GPIO_PIN_8,  GPIO_PIN_9,   // BTN 61-64 (PG6-PG9)
   GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12, GPIO_PIN_13,  // BTN 65-68 (PG10-PG13)
-  GPIO_PIN_14, GPIO_PIN_15, GPIO_PIN_7,  GPIO_PIN_8    // BTN 69-72 (PG14,PG15,PF7,PF8)
+  GPIO_PIN_14                                           // BTN 69    (PG14)
 };
 
 void JOYSTICK_SendReport(void)
@@ -285,19 +290,14 @@ void JOYSTICK_SendReport(void)
     report[i * 2 + 1] = (uint8_t)((val >> 8) & 0xFF);
   }
 
-  /* Pack 72 buttons into 9 bytes (inverted logic: RESET = pressed = 1) */
+  /* Pack 69 buttons into 9 bytes (inverted logic: RESET = pressed = 1) */
   for (uint8_t i = 0; i < 9; i++)
   {
     report[12 + i] = 0;
   }
 
-  for (uint8_t i = 0; i < 72; i++)
+  for (uint8_t i = 0; i < 69; i++)
   {
-    /* BTN 71 (idx 70, PF7) and BTN 72 (idx 71, PF8) are spare inputs with
-     * nothing wired — skip to prevent floating-pin false triggers */
-    if (i >= 70)
-      continue;
-
     if (HAL_GPIO_ReadPin((GPIO_TypeDef*)btn_port[i], btn_pin[i]) == GPIO_PIN_RESET)
     {
       report[12 + (i / 8)] |= (1U << (i % 8));
