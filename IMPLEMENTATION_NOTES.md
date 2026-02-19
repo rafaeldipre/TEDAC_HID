@@ -213,7 +213,7 @@ report[i * 2 + 1] = (uint8_t)((val >> 8) & 0xFF); // byte alto
 
 ```
 Bytes  0-11 : 6 ejes × 2 bytes (signed 16-bit, little-endian)
-Bytes 12-20 : 69 botones en 9 bytes (72 bits = 69 bits datos + 3 bits padding)
+Bytes 12-20 : 72 botones en 9 bytes (72 bits exactos, sin padding)
 ```
 
 ```c
@@ -223,13 +223,16 @@ Bytes 12-20 : 69 botones en 9 bytes (72 bits = 69 bits datos + 3 bits padding)
 0x81, 0x02,  // Input (Data, Var, Abs)
 
 0x75, 0x01,  // Report Size (1)
-0x95, 0x45,  // Report Count (69)  → 69 botones
+0x95, 0x48,  // Report Count (72)  → 72 botones (sin padding)
 0x81, 0x02,  // Input (Data, Var, Abs)
-
-0x75, 0x01,  // Report Size (1)
-0x95, 0x03,  // Report Count (3)   → 3 bits padding
-0x81, 0x01,  // Input (Const)
 ```
+
+Tamaño del descriptor: **49 bytes** (`USBD_CUSTOM_HID_REPORT_DESC_SIZE` en `usbd_conf.h`).
+
+> **Nota sobre botones y padding:**
+> - 69 botones → 69 bits → 3 bits padding → 9 bytes (descriptor = 55 bytes)
+> - 72 botones → 72 bits → **0 bits padding** → 9 bytes (descriptor = 49 bytes)
+> El payload del report se mantiene en **21 bytes** en ambos casos.
 
 ---
 
@@ -248,16 +251,20 @@ if (HAL_GPIO_ReadPin(port, pin) == GPIO_PIN_RESET)
     report[12 + (i / 8)] |= (1U << (i % 8));
 ```
 
-### Distribución de pines — 69 botones
+### Distribución de pines — 72 botones
 
-| Botones | Puerto | Pines |
-|---------|--------|-------|
-| 01-16   | GPIOE  | PE0-PE15 |
-| 17-29   | GPIOD  | PD8-PD12, PD0-PD7 |
-| 30-43   | GPIOB  | PB0-PB13 |
-| 44-53   | GPIOC  | PC4-PC13 |
-| 54-60   | GPIOF  | PF0-PF6 |
-| 61-69   | GPIOG  | PG6-PG14 |
+| Botones | Puerto | Pines              |
+|---------|--------|--------------------|
+| 01–16   | GPIOE  | PE0–PE15           |
+| 17–21   | GPIOD  | PD8–PD12           |
+| 22–29   | GPIOD  | PD0–PD7            |
+| 30–43   | GPIOB  | PB0–PB13           |
+| 44–47   | GPIOC  | PC4–PC7            |
+| 48–53   | GPIOC  | PC8–PC13           |
+| 54–60   | GPIOF  | PF0–PF6            |
+| 61–69   | GPIOG  | PG6–PG14           |
+| 70      | GPIOG  | PG15 (TDU Off)     |
+| 71–72   | GPIOF  | PF7–PF8 (Spare)    |
 
 ---
 
