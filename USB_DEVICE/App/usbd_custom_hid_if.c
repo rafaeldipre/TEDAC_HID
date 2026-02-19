@@ -293,6 +293,11 @@ void JOYSTICK_SendReport(void)
 
   for (uint8_t i = 0; i < 72; i++)
   {
+    /* BTN 71 (idx 70, PF7) and BTN 72 (idx 71, PF8) are spare inputs with
+     * nothing wired — skip to prevent floating-pin false triggers */
+    if (i >= 70)
+      continue;
+
     if (HAL_GPIO_ReadPin((GPIO_TypeDef*)btn_port[i], btn_pin[i]) == GPIO_PIN_RESET)
     {
       report[12 + (i / 8)] |= (1U << (i % 8));
