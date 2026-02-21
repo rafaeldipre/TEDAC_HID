@@ -201,6 +201,10 @@ void Error_Handler(void);
 #define BTN_01_TDU_TAD_GPIO_Port GPIOE
 #define BTN_02_TDU_FCR_Pin GPIO_PIN_1
 #define BTN_02_TDU_FCR_GPIO_Port GPIOE
+#define BTN_73_LHG_TRIG_POS1_Pin GPIO_PIN_13
+#define BTN_73_LHG_TRIG_POS1_GPIO_Port GPIOD
+#define BTN_74_LHG_TRIG_POS2_Pin GPIO_PIN_14
+#define BTN_74_LHG_TRIG_POS2_GPIO_Port GPIOD
 
 /* USER CODE BEGIN Private defines */
 

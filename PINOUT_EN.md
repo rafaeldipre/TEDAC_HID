@@ -2,7 +2,7 @@
 
 **MCU:** STM32H723ZGT6 (LQFP144)
 **Board:** EC Buying FK723M1-ZGT6 V1.0
-**Firmware:** 72 digital buttons + 6 analog axes
+**Firmware:** 74 digital buttons + 6 analog axes
 
 ---
 
@@ -51,7 +51,7 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 | 20    | TDU DAY             | PD11      | GPIOD  | 11    |
 | 21    | TDU NT              | PD12      | GPIOD  | 12    |
 
-### LHG (Left Hand Grip) — BTN 22–47
+### LHG (Left Hand Grip) — BTN 22–47, 73–74 (28 buttons)
 
 | HID # | Name                | STM32 Pin | Port   | Pin # |
 |-------|---------------------|-----------|--------|-------|
@@ -81,6 +81,10 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 | 45    | LHG 3POS A          | PC5       | GPIOC  | 5     |
 | 46    | LHG 3POS B          | PC6       | GPIOC  | 6     |
 | 47    | LHG PUSH            | PC7       | GPIOC  | 7     |
+| 73    | LHG TRIG POS1       | PD13      | GPIOD  | 13    |
+| 74    | LHG TRIG POS2       | PD14      | GPIOD  | 14    |
+
+> BTN 73–74 are the two detents of the LHG trigger (first and second position). Assigned outside the 22–47 block as they were added later.
 
 ### RHG (Right Hand Grip) — BTN 48–72
 
@@ -124,7 +128,7 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 | GPIOA  | PA2, PA3, PA6, PA7, PA11, PA12 | ADC Z/Rx, ADC X/Y, USB DP/DM  |
 | GPIOB  | PB0–PB13               | LHG BTN 30–43                         |
 | GPIOC  | PC0, PC1, PC4–PC13     | ADC Ry/Rz, LHG BTN 44–47, RHG BTN 48–53 |
-| GPIOD  | PD0–PD12               | TDU BTN 17–21, LHG BTN 22–29          |
+| GPIOD  | PD0–PD12, PD13–PD14    | TDU BTN 17–21, LHG BTN 22–29, LHG BTN 73–74 |
 | GPIOE  | PE0–PE15               | TDU BTN 01–16                         |
 | GPIOF  | PF0–PF8                | RHG BTN 54–60, Spare BTN 71–72        |
 | GPIOG  | PG6–PG15               | RHG BTN 61–70                         |
@@ -136,7 +140,7 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 | Bytes     | Content                                              |
 |-----------|------------------------------------------------------|
 | 0–11      | 6 analog axes (2 bytes each, signed 16-bit, little-endian) |
-| 12–20     | 72 digital buttons (9 bytes, 1 bit per button)       |
-| **Total** | **21 bytes**                                         |
+| 12–21     | 74 digital buttons + 6-bit padding (10 bytes, 1 bit per button) |
+| **Total** | **22 bytes**                                         |
 
-Descriptor size: 49 bytes. No Report ID.
+Descriptor size: 55 bytes. No Report ID. The 6 padding bits align 74 bits to a full 10-byte boundary.

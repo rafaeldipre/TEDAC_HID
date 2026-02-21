@@ -2,7 +2,7 @@
 
 **MCU:** STM32H723ZGT6 (LQFP144)
 **Board:** EC Buying FK723M1-ZGT6 V1.0
-**Firmware:** 72 botones digitales + 6 ejes analógicos
+**Firmware:** 74 botones digitales + 6 ejes analógicos
 
 ---
 
@@ -51,7 +51,7 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 | 20    | TDU DAY             | PD11      | GPIOD  | 11    |
 | 21    | TDU NT              | PD12      | GPIOD  | 12    |
 
-### LHG (Left Hand Grip) — BTN 22–47
+### LHG (Left Hand Grip) — BTN 22–47, 73–74 (28 botones)
 
 | # HID | Nombre / Name       | Pin STM32 | Puerto | Pin # |
 |-------|---------------------|-----------|--------|-------|
@@ -81,6 +81,10 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 | 45    | LHG 3POS A          | PC5       | GPIOC  | 5     |
 | 46    | LHG 3POS B          | PC6       | GPIOC  | 6     |
 | 47    | LHG PUSH            | PC7       | GPIOC  | 7     |
+| 73    | LHG TRIG POS1       | PD13      | GPIOD  | 13    |
+| 74    | LHG TRIG POS2       | PD14      | GPIOD  | 14    |
+
+> BTN 73–74 son los dos pasos del gatillo del LHG (primera y segunda posición). Se asignan fuera del bloque 22–47 por haber sido añadidos posteriormente.
 
 ### RHG (Right Hand Grip) — BTN 48–72
 
@@ -124,7 +128,7 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 | GPIOA  | PA2, PA3, PA6, PA7, PA11, PA12 | ADC ejes Z/Rx, ADC ejes X/Y, USB DP/DM |
 | GPIOB  | PB0–PB13 | LHG BTN 30–43 |
 | GPIOC  | PC0, PC1, PC4–PC13 | ADC ejes Ry/Rz, LHG BTN 44–47, RHG BTN 48–53 |
-| GPIOD  | PD0–PD12 | TDU BTN 17–21, LHG BTN 22–29 |
+| GPIOD  | PD0–PD12, PD13–PD14 | TDU BTN 17–21, LHG BTN 22–29, LHG BTN 73–74 |
 | GPIOE  | PE0–PE15 | TDU BTN 01–16 |
 | GPIOF  | PF0–PF8 | RHG BTN 54–60, SPARE BTN 71–72 |
 | GPIOG  | PG6–PG15 | RHG BTN 61–70 |
@@ -136,7 +140,7 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 | Bytes  | Contenido |
 |--------|-----------|
 | 0–11   | 6 ejes analógicos (2 bytes cada uno, signed 16-bit, little-endian) |
-| 12–20  | 72 botones digitales (9 bytes, 1 bit por botón) |
-| **Total** | **21 bytes** |
+| 12–21  | 74 botones digitales + 6 bits padding (10 bytes, 1 bit por botón) |
+| **Total** | **22 bytes** |
 
-Descriptor size: 49 bytes. Sin Report ID.
+Descriptor size: 55 bytes. Sin Report ID. Los 6 bits de padding alinean 74 bits a 10 bytes completos.

@@ -464,11 +464,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pins : BTN_17_TDU_BRT_DOWN_Pin BTN_18_TDU_COM_UP_Pin BTN_19_TDU_COM_DOWN_Pin BTN_20_TDU_DAY_Pin
                            BTN_21_TDU_NT_Pin BTN_22_LHG_SW1_Pin BTN_23_LHG_SW2_Pin BTN_24_LHG_SW3_Pin
                            BTN_25_LHG_SW4_Pin BTN_26_LHG_SW5_Pin BTN_27_LHG_HAT1_UP_Pin BTN_28_LHG_HAT1_DOWN_Pin
-                           BTN_29_LHG_HAT1_LEFT_Pin */
+                           BTN_29_LHG_HAT1_LEFT_Pin BTN_73_LHG_TRIG_POS1_Pin BTN_74_LHG_TRIG_POS2_Pin */
   GPIO_InitStruct.Pin = BTN_17_TDU_BRT_DOWN_Pin|BTN_18_TDU_COM_UP_Pin|BTN_19_TDU_COM_DOWN_Pin|BTN_20_TDU_DAY_Pin
                           |BTN_21_TDU_NT_Pin|BTN_22_LHG_SW1_Pin|BTN_23_LHG_SW2_Pin|BTN_24_LHG_SW3_Pin
                           |BTN_25_LHG_SW4_Pin|BTN_26_LHG_SW5_Pin|BTN_27_LHG_HAT1_UP_Pin|BTN_28_LHG_HAT1_DOWN_Pin
-                          |BTN_29_LHG_HAT1_LEFT_Pin;
+                          |BTN_29_LHG_HAT1_LEFT_Pin|BTN_73_LHG_TRIG_POS1_Pin|BTN_74_LHG_TRIG_POS2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);

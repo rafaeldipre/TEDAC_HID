@@ -35,7 +35,7 @@
 #include "stm32h7xx_hal.h"
 
 /* USER CODE BEGIN INCLUDE */
-#define CUSTOM_HID_EPIN_SIZE  0x15U
+#define CUSTOM_HID_EPIN_SIZE  0x16U
 /* USER CODE END INCLUDE */
 
 /** @addtogroup USBD_OTG_DRIVER
@@ -77,7 +77,7 @@
 /*---------- -----------*/
 #define USBD_CUSTOMHID_OUTREPORT_BUF_SIZE     2U
 /*---------- -----------*/
-#define USBD_CUSTOM_HID_REPORT_DESC_SIZE     49U
+#define USBD_CUSTOM_HID_REPORT_DESC_SIZE     55U
 /*---------- -----------*/
 #define CUSTOM_HID_HS_BINTERVAL     0x1U
 /*---------- -----------*/
