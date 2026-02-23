@@ -2,7 +2,7 @@
 
 **MCU:** STM32H723ZGT6 (LQFP144)
 **Board:** EC Buying FK723M1-ZGT6 V1.0
-**Firmware:** 74 digital buttons + 6 analog axes
+**Firmware:** 76 digital buttons + 6 analog axes
 
 ---
 
@@ -86,7 +86,7 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 
 > BTN 73–74 are the two detents of the LHG trigger (first and second position). Assigned outside the 22–47 block as they were added later.
 
-### RHG (Right Hand Grip) — BTN 48–72
+### RHG (Right Hand Grip) — BTN 48–72, 75–76 (27 buttons)
 
 | HID # | Name                | STM32 Pin | Port   | Pin # |
 |-------|---------------------|-----------|--------|-------|
@@ -112,12 +112,15 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 | 67    | RHG 3POS2 A         | PG12      | GPIOG  | 12    |
 | 68    | RHG 3POS2 B         | PG13      | GPIOG  | 13    |
 | 69    | RHG PUSH            | PG14      | GPIOG  | 14    |
-| 70    | TDU OFF *(new)*     | PG15      | GPIOG  | 15    |
+| 70    | TDU OFF             | PG15      | GPIOG  | 15    |
 | 71    | SPARE 1             | PF7       | GPIOF  | 7     |
 | 72    | SPARE 2             | PF8       | GPIOF  | 8     |
+| 75    | RHG SW8             | PG0       | GPIOG  | 0     |
+| 76    | RHG SW9             | PG1       | GPIOG  | 1     |
 
-> BTN 70 maps to the **Off** position of the TDU Day/NT/Off 3-position switch (DCS World has a separate binding for this position).
+> BTN 70 maps to the **Off** position of the TDU Day/NT/Off 3-position switch.
 > BTN 71–72 are spare/reserve inputs.
+> BTN 75–76 are additional normal buttons on PG0/PG1 (GPIOG).
 
 ---
 
@@ -131,7 +134,7 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 | GPIOD  | PD0–PD12, PD13–PD14    | TDU BTN 17–21, LHG BTN 22–29, LHG BTN 73–74 |
 | GPIOE  | PE0–PE15               | TDU BTN 01–16                         |
 | GPIOF  | PF0–PF8                | RHG BTN 54–60, Spare BTN 71–72        |
-| GPIOG  | PG6–PG15               | RHG BTN 61–70                         |
+| GPIOG  | PG0–PG1, PG6–PG15      | RHG BTN 61–70, RHG BTN 75–76          |
 
 ---
 
@@ -140,7 +143,7 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 | Bytes     | Content                                              |
 |-----------|------------------------------------------------------|
 | 0–11      | 6 analog axes (2 bytes each, signed 16-bit, little-endian) |
-| 12–21     | 74 digital buttons + 6-bit padding (10 bytes, 1 bit per button) |
+| 12–21     | 76 digital buttons + 4-bit padding (10 bytes, 1 bit per button) |
 | **Total** | **22 bytes**                                         |
 
-Descriptor size: 55 bytes. No Report ID. The 6 padding bits align 74 bits to a full 10-byte boundary.
+Descriptor size: 55 bytes. No Report ID. The 4 padding bits align 76 bits to a full 10-byte boundary.

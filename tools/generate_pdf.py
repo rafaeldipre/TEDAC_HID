@@ -259,6 +259,8 @@ RHG = [
     ("70","TDU OFF",         "PG15","GPIOG","15"),
     ("71","SPARE 1",         "PF7", "GPIOF","7"),
     ("72","SPARE 2",         "PF8", "GPIOF","8"),
+    ("75","RHG SW8",         "PG0", "GPIOG","0"),
+    ("76","RHG SW9",         "PG1", "GPIOG","1"),
 ]
 
 # ── GPIO Port Summary ──────────────────────────────────────────────────────────
@@ -269,13 +271,13 @@ PORT_SUMMARY = [
     ("GPIOD","PD0–PD12, PD13–PD14",            "TDU BTN 17–21, LHG BTN 22–29, LHG BTN 73–74"),
     ("GPIOE","PE0–PE15",                        "TDU BTN 01–16"),
     ("GPIOF","PF0–PF8",                         "RHG BTN 54–60, Spare BTN 71–72"),
-    ("GPIOG","PG6–PG15",                        "RHG BTN 61–70"),
+    ("GPIOG","PG0–PG1, PG6–PG15",               "RHG BTN 61–70, RHG BTN 75–76"),
 ]
 
 # ── HID Report Format ──────────────────────────────────────────────────────────
 REPORT_ROWS = [
     ("Bytes 0–11",  "6 analog axes",  "2 bytes each, signed 16-bit, little-endian",  "12 bytes"),
-    ("Bytes 12–21", "74 digital buttons + 6-bit padding", "1 bit per button, padded to 10 bytes", "10 bytes"),
+    ("Bytes 12–21", "76 digital buttons + 4-bit padding", "1 bit per button, padded to 10 bytes", "10 bytes"),
     ("Total",       "—",              "No Report ID",                                  "22 bytes"),
 ]
 
@@ -345,7 +347,7 @@ def build():
         "MCU: STM32H723ZGT6 (LQFP144)  ·  Board: EC Buying FK723M1-ZGT6 V1.0",
         S_META))
     story.append(Paragraph(
-        "74 digital buttons  +  6 analog axes  ·  USB HID Custom — 22-byte report",
+        "76 digital buttons  +  6 analog axes  ·  USB HID Custom — 22-byte report",
         S_META))
     story.append(Spacer(1, 10*mm))
 
@@ -354,8 +356,8 @@ def build():
         [
             Paragraph("<b>TDU</b><br/>21 buttons<br/>BTN 01–21", _stat_style(C_TDU_HDR)),
             Paragraph("<b>LHG</b><br/>28 buttons<br/>BTN 22–47, 73–74", _stat_style(C_LHG_HDR)),
-            Paragraph("<b>RHG</b><br/>25 buttons<br/>BTN 48–72", _stat_style(C_RHG_HDR)),
-            Paragraph("<b>Total</b><br/>74 buttons<br/>+ 6 analog axes", _stat_style(C_AXS_HDR)),
+            Paragraph("<b>RHG</b><br/>27 buttons<br/>BTN 48–72, 75–76", _stat_style(C_RHG_HDR)),
+            Paragraph("<b>Total</b><br/>76 buttons<br/>+ 6 analog axes", _stat_style(C_AXS_HDR)),
         ]
     ]
     stats_t = Table(stats_data, colWidths=[43*mm]*4)
@@ -420,13 +422,14 @@ def build():
     # ══ RHG ═══════════════════════════════════════════════════════════════════
     story.append(section_header(
         "RHG — Right Hand Grip",
-        "25 buttons  ·  BTN 48–72  ·  GPIOC + GPIOF + GPIOG",
+        "27 buttons  ·  BTN 48–72, 75–76  ·  GPIOC + GPIOF + GPIOG",
         C_RHG_HDR))
     story.append(Spacer(1, 2*mm))
     story.append(btn_table(HDR, RHG, C_RHG_SUB, C_RHG_ROW1, C_RHG_ROW2))
     story.append(Paragraph(
         "BTN 70 (TDU OFF) maps to the Off position of the TDU Day/NT/Off 3-position switch.  "
-        "BTN 71–72 are spare/reserve inputs.",
+        "BTN 71–72 are spare/reserve inputs.  "
+        "BTN 75–76 (RHG SW8/SW9) are additional normal buttons on PG0/PG1.",
         S_NOTE))
     story.append(Spacer(1, 6*mm))
 
@@ -452,7 +455,7 @@ def build():
         Spacer(1, 3*mm),
         Paragraph(
             "Byte layout: [0–11] 6×2-byte axes (signed 16-bit LE)  +  "
-            "[12–21] 74 button bits (LSB first) + 6 padding bits.  "
+            "[12–21] 76 button bits (LSB first) + 4 padding bits.  "
             "Button reading: GPIO_PIN_RESET (LOW) = pressed = bit set to 1.",
             S_NOTE),
     ]))

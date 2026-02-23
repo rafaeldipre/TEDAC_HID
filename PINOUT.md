@@ -2,7 +2,7 @@
 
 **MCU:** STM32H723ZGT6 (LQFP144)
 **Board:** EC Buying FK723M1-ZGT6 V1.0
-**Firmware:** 74 botones digitales + 6 ejes analógicos
+**Firmware:** 76 botones digitales + 6 ejes analógicos
 
 ---
 
@@ -86,7 +86,7 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 
 > BTN 73–74 son los dos pasos del gatillo del LHG (primera y segunda posición). Se asignan fuera del bloque 22–47 por haber sido añadidos posteriormente.
 
-### RHG (Right Hand Grip) — BTN 48–72
+### RHG (Right Hand Grip) — BTN 48–72, 75–76 (27 botones)
 
 | # HID | Nombre / Name       | Pin STM32 | Puerto | Pin # |
 |-------|---------------------|-----------|--------|-------|
@@ -112,12 +112,15 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 | 67    | RHG 3POS2 A         | PG12      | GPIOG  | 12    |
 | 68    | RHG 3POS2 B         | PG13      | GPIOG  | 13    |
 | 69    | RHG PUSH            | PG14      | GPIOG  | 14    |
-| 70    | TDU OFF *(nuevo)*   | PG15      | GPIOG  | 15    |
+| 70    | TDU OFF             | PG15      | GPIOG  | 15    |
 | 71    | SPARE 1             | PF7       | GPIOF  | 7     |
 | 72    | SPARE 2             | PF8       | GPIOF  | 8     |
+| 75    | RHG SW8             | PG0       | GPIOG  | 0     |
+| 76    | RHG SW9             | PG1       | GPIOG  | 1     |
 
-> BTN 70 corresponde a la posición **Off** del switch Day/NT/Off del TDU (DCS World tiene binding separado para esta posición).
+> BTN 70 corresponde a la posición **Off** del switch Day/NT/Off del TDU.
 > BTN 71–72 son entradas de reserva / spare inputs.
+> BTN 75–76 son botones normales adicionales en PG0/PG1 (GPIOG).
 
 ---
 
@@ -131,7 +134,7 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 | GPIOD  | PD0–PD12, PD13–PD14 | TDU BTN 17–21, LHG BTN 22–29, LHG BTN 73–74 |
 | GPIOE  | PE0–PE15 | TDU BTN 01–16 |
 | GPIOF  | PF0–PF8 | RHG BTN 54–60, SPARE BTN 71–72 |
-| GPIOG  | PG6–PG15 | RHG BTN 61–70 |
+| GPIOG  | PG0–PG1, PG6–PG15 | RHG BTN 61–70, RHG BTN 75–76 |
 
 ---
 
@@ -140,7 +143,7 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 | Bytes  | Contenido |
 |--------|-----------|
 | 0–11   | 6 ejes analógicos (2 bytes cada uno, signed 16-bit, little-endian) |
-| 12–21  | 74 botones digitales + 6 bits padding (10 bytes, 1 bit por botón) |
+| 12–21  | 76 botones digitales + 4 bits padding (10 bytes, 1 bit por botón) |
 | **Total** | **22 bytes** |
 
-Descriptor size: 55 bytes. Sin Report ID. Los 6 bits de padding alinean 74 bits a 10 bytes completos.
+Descriptor size: 55 bytes. Sin Report ID. Los 4 bits de padding alinean 76 bits a 10 bytes completos.
