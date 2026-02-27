@@ -109,17 +109,17 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_HS[USBD_CUSTOM_HID_REPORT_DES
   0x95, 0x06,        //   Report Count (6)
   0x81, 0x02,        //   Input (Data, Var, Abs)
 
-  // 78 buttons (78 bits + 2-bit padding = 10 bytes)
+  // 76 buttons (76 bits + 4-bit padding = 10 bytes)
   0x05, 0x09,        //   Usage Page (Button)
   0x19, 0x01,        //   Usage Minimum (1)
-  0x29, 0x4E,        //   Usage Maximum (78)
+  0x29, 0x4C,        //   Usage Maximum (76)
   0x15, 0x00,        //   Logical Minimum (0)
   0x25, 0x01,        //   Logical Maximum (1)
   0x75, 0x01,        //   Report Size (1)
-  0x95, 0x4E,        //   Report Count (78)
+  0x95, 0x4C,        //   Report Count (76)
   0x81, 0x02,        //   Input (Data, Var, Abs)
-  // 2-bit padding to reach byte boundary (80 bits = 10 bytes total)
-  0x75, 0x02,        //   Report Size (2)
+  // 4-bit padding to reach byte boundary (80 bits = 10 bytes total)
+  0x75, 0x04,        //   Report Size (4)
   0x95, 0x01,        //   Report Count (1)
   0x81, 0x03,        //   Input (Const, Var, Abs)
 
@@ -226,22 +226,21 @@ static int8_t CUSTOM_HID_OutEvent_HS(uint8_t event_idx, uint8_t state)
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
-static const GPIO_TypeDef* btn_port[78] = {
+static const GPIO_TypeDef* btn_port[76] = {
   GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE,  // BTN 01-08
   GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE, GPIOE,  // BTN 09-16
   GPIOD, GPIOD, GPIOD, GPIOD, GPIOD, GPIOD, GPIOD, GPIOD,  // BTN 17-24
   GPIOD, GPIOD, GPIOD, GPIOD, GPIOD, GPIOB, GPIOB, GPIOB,  // BTN 25-32
   GPIOB, GPIOB, GPIOB, GPIOB, GPIOB, GPIOB, GPIOB, GPIOB,  // BTN 33-40
-  GPIOB, GPIOB, GPIOB, GPIOC, GPIOC, GPIOC, GPIOC, GPIOF,  // BTN 41-48
-  GPIOF, GPIOC, GPIOC, GPIOC, GPIOC, GPIOF, GPIOF, GPIOF,  // BTN 49-56
+  GPIOB, GPIOB, GPIOB, GPIOC, GPIOC, GPIOC, GPIOC, GPIOB,  // BTN 41-48
+  GPIOB, GPIOC, GPIOC, GPIOC, GPIOC, GPIOF, GPIOF, GPIOF,  // BTN 49-56
   GPIOF, GPIOF, GPIOF, GPIOF, GPIOG, GPIOG, GPIOG, GPIOG,  // BTN 57-64
   GPIOG, GPIOG, GPIOG, GPIOG, GPIOG, GPIOG, GPIOF, GPIOF,  // BTN 65-72
   GPIOD, GPIOD,                                              // BTN 73-74
-  GPIOG, GPIOG,                                              // BTN 75-76
-  GPIOB, GPIOB                                               // BTN 77-78 (TEST: PB14,PB15)
+  GPIOG, GPIOG                                               // BTN 75-76
 };
 
-static const uint16_t btn_pin[78] = {
+static const uint16_t btn_pin[76] = {
   GPIO_PIN_0,  GPIO_PIN_1,  GPIO_PIN_2,  GPIO_PIN_3,   // BTN 01-04 (PE0-PE3)
   GPIO_PIN_4,  GPIO_PIN_5,  GPIO_PIN_6,  GPIO_PIN_7,   // BTN 05-08 (PE4-PE7)
   GPIO_PIN_8,  GPIO_PIN_9,  GPIO_PIN_10, GPIO_PIN_11,  // BTN 09-12 (PE8-PE11)
@@ -253,16 +252,15 @@ static const uint16_t btn_pin[78] = {
   GPIO_PIN_3,  GPIO_PIN_4,  GPIO_PIN_5,  GPIO_PIN_6,   // BTN 33-36 (PB3-PB6)
   GPIO_PIN_7,  GPIO_PIN_8,  GPIO_PIN_9,  GPIO_PIN_10,  // BTN 37-40 (PB7-PB10)
   GPIO_PIN_11, GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_4,   // BTN 41-44 (PB11-PB13,PC4)
-  GPIO_PIN_5,  GPIO_PIN_6,  GPIO_PIN_7,  GPIO_PIN_11,  // BTN 45-48 (PC5,PC6,PC7,PF11)
-  GPIO_PIN_12, GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12,  // BTN 49-52 (PF12,PC10,PC11,PC12)
+  GPIO_PIN_5,  GPIO_PIN_6,  GPIO_PIN_7,  GPIO_PIN_14,  // BTN 45-48 (PC5,PC6,PC7,PB14)
+  GPIO_PIN_15, GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12,  // BTN 49-52 (PB15,PC10,PC11,PC12)
   GPIO_PIN_13, GPIO_PIN_0,  GPIO_PIN_1,  GPIO_PIN_2,   // BTN 53-56 (PC13,PF0-PF2)
   GPIO_PIN_3,  GPIO_PIN_4,  GPIO_PIN_5,  GPIO_PIN_6,   // BTN 57-60 (PF3-PF6)
   GPIO_PIN_6,  GPIO_PIN_7,  GPIO_PIN_8,  GPIO_PIN_9,   // BTN 61-64 (PG6-PG9)
   GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12, GPIO_PIN_13,  // BTN 65-68 (PG10-PG13)
   GPIO_PIN_14, GPIO_PIN_15, GPIO_PIN_7,  GPIO_PIN_8,   // BTN 69-72 (PG14,PG15,PF7,PF8)
   GPIO_PIN_13, GPIO_PIN_14,                             // BTN 73-74 (PD13,PD14)
-  GPIO_PIN_0,  GPIO_PIN_1,                              // BTN 75-76 (PG0,PG1)
-  GPIO_PIN_14, GPIO_PIN_15                              // BTN 77-78 TEST (PB14,PB15)
+  GPIO_PIN_0,  GPIO_PIN_1                               // BTN 75-76 (PG0,PG1)
 };
 
 void JOYSTICK_SendReport(void)
@@ -295,13 +293,13 @@ void JOYSTICK_SendReport(void)
     report[i * 2 + 1] = (uint8_t)((val >> 8) & 0xFF);
   }
 
-  /* Pack 78 buttons into 10 bytes (78 bits + 2-bit padding, inverted logic: RESET = pressed = 1) */
+  /* Pack 76 buttons into 10 bytes (76 bits + 4-bit padding, inverted logic: RESET = pressed = 1) */
   for (uint8_t i = 0; i < 10; i++)
   {
     report[12 + i] = 0;
   }
 
-  for (uint8_t i = 0; i < 78; i++)
+  for (uint8_t i = 0; i < 76; i++)
   {
     if (HAL_GPIO_ReadPin((GPIO_TypeDef*)btn_port[i], btn_pin[i]) == GPIO_PIN_RESET)
     {

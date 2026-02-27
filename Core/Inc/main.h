@@ -139,10 +139,10 @@ void Error_Handler(void);
 #define BTN_46_LHG_3POS_B_GPIO_Port GPIOC
 #define BTN_47_LHG_PUSH_Pin GPIO_PIN_7
 #define BTN_47_LHG_PUSH_GPIO_Port GPIOC
-#define BTN_48_RHG_SW1_Pin GPIO_PIN_11
-#define BTN_48_RHG_SW1_GPIO_Port GPIOF
-#define BTN_49_RHG_SW2_Pin GPIO_PIN_12
-#define BTN_49_RHG_SW2_GPIO_Port GPIOF
+#define BTN_48_RHG_SW1_Pin GPIO_PIN_14
+#define BTN_48_RHG_SW1_GPIO_Port GPIOB
+#define BTN_49_RHG_SW2_Pin GPIO_PIN_15
+#define BTN_49_RHG_SW2_GPIO_Port GPIOB
 #define BTN_50_RHG_SW3_Pin GPIO_PIN_10
 #define BTN_50_RHG_SW3_GPIO_Port GPIOC
 #define BTN_51_RHG_SW4_Pin GPIO_PIN_11
@@ -209,10 +209,6 @@ void Error_Handler(void);
 #define BTN_75_RHG_SW8_GPIO_Port GPIOG
 #define BTN_76_RHG_SW9_Pin GPIO_PIN_1
 #define BTN_76_RHG_SW9_GPIO_Port GPIOG
-#define BTN_77_TEST1_Pin GPIO_PIN_14
-#define BTN_77_TEST1_GPIO_Port GPIOB
-#define BTN_78_TEST2_Pin GPIO_PIN_15
-#define BTN_78_TEST2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

@@ -234,8 +234,8 @@ LHG = [
 ]
 
 RHG = [
-    ("48","RHG SW1",         "PF11","GPIOF","11"),
-    ("49","RHG SW2",         "PF12","GPIOF","12"),
+    ("48","RHG SW1",         "PB14","GPIOB","14"),
+    ("49","RHG SW2",         "PB15","GPIOB","15"),
     ("50","RHG SW3",         "PC10","GPIOC","10"),
     ("51","RHG SW4",         "PC11","GPIOC","11"),
     ("52","RHG SW5",         "PC12","GPIOC","12"),
@@ -261,25 +261,23 @@ RHG = [
     ("72","SPARE 2",         "PF8", "GPIOF","8"),
     ("75","RHG SW8",         "PG0", "GPIOG","0"),
     ("76","RHG SW9",         "PG1", "GPIOG","1"),
-    ("77","TEST1",           "PB14","GPIOB","14"),
-    ("78","TEST2",           "PB15","GPIOB","15"),
 ]
 
 # ── GPIO Port Summary ──────────────────────────────────────────────────────────
 PORT_SUMMARY = [
     ("GPIOA","PA2, PA3, PA6, PA7, PA11, PA12","ADC Z/Rx axes, ADC X/Y axes, USB DP/DM"),
-    ("GPIOB","PB0–PB13, PB14–PB15",            "LHG BTN 30–43, TEST BTN 77–78"),
+    ("GPIOB","PB0–PB15",                        "LHG BTN 30–43, RHG BTN 48–49"),
     ("GPIOC","PC0, PC1, PC4–PC7, PC10–PC13",  "ADC Ry/Rz axes, LHG BTN 44–47, RHG BTN 50–53"),
     ("GPIOD","PD0–PD12, PD13–PD14",            "TDU BTN 17–21, LHG BTN 22–29, LHG BTN 73–74"),
     ("GPIOE","PE0–PE15",                        "TDU BTN 01–16"),
-    ("GPIOF","PF0–PF8, PF11–PF12",              "RHG BTN 48–49, RHG BTN 54–60, Spare BTN 71–72"),
+    ("GPIOF","PF0–PF8",                         "RHG BTN 54–60, Spare BTN 71–72"),
     ("GPIOG","PG0–PG1, PG6–PG15",               "RHG BTN 61–70, RHG BTN 75–76"),
 ]
 
 # ── HID Report Format ──────────────────────────────────────────────────────────
 REPORT_ROWS = [
     ("Bytes 0–11",  "6 analog axes",  "2 bytes each, signed 16-bit, little-endian",  "12 bytes"),
-    ("Bytes 12–21", "78 digital buttons + 2-bit padding", "1 bit per button, padded to 10 bytes", "10 bytes"),
+    ("Bytes 12–21", "76 digital buttons + 4-bit padding", "1 bit per button, padded to 10 bytes", "10 bytes"),
     ("Total",       "—",              "No Report ID",                                  "22 bytes"),
 ]
 
@@ -320,7 +318,7 @@ def on_later_pages(canvas, doc):
     canvas.setFont("Helvetica", 7.5)
     canvas.drawString(MARGIN, 7*mm,
         "STM32H723ZGT6 · EC Buying FK723M1-ZGT6 · Active-low logic (GND = pressed) · Internal pull-up")
-    canvas.drawRightString(PAGE_W - MARGIN, 7*mm, "74 buttons + 6 axes | v2.0")
+    canvas.drawRightString(PAGE_W - MARGIN, 7*mm, "76 buttons + 6 axes | v2.0")
     canvas.restoreState()
 
 # ── Build document ─────────────────────────────────────────────────────────────
@@ -349,7 +347,7 @@ def build():
         "MCU: STM32H723ZGT6 (LQFP144)  ·  Board: EC Buying FK723M1-ZGT6 V1.0",
         S_META))
     story.append(Paragraph(
-        "78 digital buttons  +  6 analog axes  ·  USB HID Custom — 22-byte report",
+        "76 digital buttons  +  6 analog axes  ·  USB HID Custom — 22-byte report",
         S_META))
     story.append(Spacer(1, 10*mm))
 
@@ -383,7 +381,7 @@ def build():
         "★ Highlighted rows mark newly added buttons. "
         "Active-low logic: GND = button pressed. "
         "Internal pull-up on all GPIO inputs. "
-        "74 HID button bits + 6-bit padding = 10 bytes.",
+        "76 button bits + 4-bit padding = 10 bytes.",
         S_NOTE))
 
     story.append(PageBreak())
@@ -424,7 +422,7 @@ def build():
     # ══ RHG ═══════════════════════════════════════════════════════════════════
     story.append(section_header(
         "RHG — Right Hand Grip",
-        "27 buttons  ·  BTN 48–72, 75–76  ·  GPIOC + GPIOF + GPIOG",
+        "27 buttons  ·  BTN 48–72, 75–76  ·  GPIOB + GPIOC + GPIOF + GPIOG",
         C_RHG_HDR))
     story.append(Spacer(1, 2*mm))
     story.append(btn_table(HDR, RHG, C_RHG_SUB, C_RHG_ROW1, C_RHG_ROW2))

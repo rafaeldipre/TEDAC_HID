@@ -440,10 +440,10 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : BTN_54_RHG_SW7_Pin BTN_55_RHG_HAT1_UP_Pin BTN_56_RHG_HAT1_DOWN_Pin BTN_57_RHG_HAT1_LEFT_Pin
                            BTN_58_RHG_HAT1_RIGHT_Pin BTN_59_RHG_HAT2_UP_Pin BTN_60_RHG_HAT2_DOWN_Pin
-                           BTN_71_SPARE1_Pin BTN_72_SPARE2_Pin BTN_48_RHG_SW1_Pin BTN_49_RHG_SW2_Pin */
+                           BTN_71_SPARE1_Pin BTN_72_SPARE2_Pin */
   GPIO_InitStruct.Pin = BTN_54_RHG_SW7_Pin|BTN_55_RHG_HAT1_UP_Pin|BTN_56_RHG_HAT1_DOWN_Pin|BTN_57_RHG_HAT1_LEFT_Pin
                           |BTN_58_RHG_HAT1_RIGHT_Pin|BTN_59_RHG_HAT2_UP_Pin|BTN_60_RHG_HAT2_DOWN_Pin
-                          |BTN_71_SPARE1_Pin|BTN_72_SPARE2_Pin|BTN_48_RHG_SW1_Pin|BTN_49_RHG_SW2_Pin;
+                          |BTN_71_SPARE1_Pin|BTN_72_SPARE2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
@@ -451,11 +451,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pins : BTN_30_LHG_HAT1_RIGHT_Pin BTN_31_LHG_HAT2_UP_Pin BTN_32_LHG_HAT2_DOWN_Pin BTN_40_LHG_TEMP1_B_Pin
                            BTN_41_LHG_TEMP2_A_Pin BTN_42_LHG_TEMP2_B_Pin BTN_43_LHG_TEMP3_A_Pin BTN_33_LHG_HAT2_LEFT_Pin
                            BTN_34_LHG_HAT2_RIGHT_Pin BTN_35_LHG_HAT3_UP_Pin BTN_36_LHG_HAT3_DOWN_Pin BTN_37_LHG_HAT3_LEFT_Pin
-                           BTN_38_LHG_HAT3_RIGHT_Pin BTN_39_LHG_TEMP1_A_Pin BTN_77_TEST1_Pin BTN_78_TEST2_Pin */
+                           BTN_38_LHG_HAT3_RIGHT_Pin BTN_39_LHG_TEMP1_A_Pin BTN_48_RHG_SW1_Pin BTN_49_RHG_SW2_Pin */
   GPIO_InitStruct.Pin = BTN_30_LHG_HAT1_RIGHT_Pin|BTN_31_LHG_HAT2_UP_Pin|BTN_32_LHG_HAT2_DOWN_Pin|BTN_40_LHG_TEMP1_B_Pin
                           |BTN_41_LHG_TEMP2_A_Pin|BTN_42_LHG_TEMP2_B_Pin|BTN_43_LHG_TEMP3_A_Pin|BTN_33_LHG_HAT2_LEFT_Pin
                           |BTN_34_LHG_HAT2_RIGHT_Pin|BTN_35_LHG_HAT3_UP_Pin|BTN_36_LHG_HAT3_DOWN_Pin|BTN_37_LHG_HAT3_LEFT_Pin
-                          |BTN_38_LHG_HAT3_RIGHT_Pin|BTN_39_LHG_TEMP1_A_Pin|BTN_77_TEST1_Pin|BTN_78_TEST2_Pin;
+                          |BTN_38_LHG_HAT3_RIGHT_Pin|BTN_39_LHG_TEMP1_A_Pin|BTN_48_RHG_SW1_Pin|BTN_49_RHG_SW2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
