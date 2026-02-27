@@ -122,6 +122,18 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 > BTN 71–72 are spare/reserve inputs.
 > BTN 75–76 are additional normal buttons on PG0/PG1 (GPIOG).
 
+### Virtual Buttons — BTN 77–78
+
+Buttons computed in firmware from physical GPIO combinations. No additional GPIO pins required.
+
+| HID # | Name       | Logic (active-low source pins)                        | Source pins          |
+|-------|------------|-------------------------------------------------------|----------------------|
+| 77    | Virtual A  | ON when PF3 **and** PF4 are both NOT pressed          | PF3 (BTN57), PF4 (BTN58) |
+| 78    | Virtual B  | ON when PD2 **and** PD4 are both NOT pressed          | PD2 (BTN24), PD4 (BTN26) |
+
+> `virtual_A = !(PF3_pressed || PF4_pressed)` — true when neither HAT1 lateral direction is active.
+> `virtual_B = !(PD2_pressed || PD4_pressed)` — true when neither SW3 nor SW5 is active.
+
 ---
 
 ## GPIO Port Summary
@@ -143,7 +155,7 @@ Internal pull-up enabled. Active-low logic (GND = pressed).
 | Bytes     | Content                                              |
 |-----------|------------------------------------------------------|
 | 0–11      | 6 analog axes (2 bytes each, signed 16-bit, little-endian) |
-| 12–21     | 76 digital buttons + 4-bit padding (10 bytes, 1 bit per button) |
+| 12–21     | 76 physical + 2 virtual buttons + 2-bit padding (10 bytes, 1 bit per button) |
 | **Total** | **22 bytes**                                         |
 
-Descriptor size: 55 bytes. No Report ID. The 4 padding bits align 76 bits to a full 10-byte boundary.
+Descriptor size: 55 bytes. No Report ID. 78 buttons (76 physical + 2 virtual) + 2 padding bits = 80 bits = 10 bytes.

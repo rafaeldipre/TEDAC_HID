@@ -233,6 +233,12 @@ LHG = [
     ("74","LHG TRIG POS2  ★","PD14","GPIOD","14"),
 ]
 
+VIRTUAL = [
+    ("77","Virtual A","—","GPIOF","PF3 (BTN57) + PF4 (BTN58)"),
+    ("78","Virtual B","—","GPIOD","PD2 (BTN24) + PD4 (BTN26)"),
+]
+VIRTUAL_HDR = ["HID #", "Name", "GPIO Pin", "Port", "Source pins (active-low)"]
+
 RHG = [
     ("48","RHG SW1",         "PB14","GPIOB","14"),
     ("49","RHG SW2",         "PB15","GPIOB","15"),
@@ -277,7 +283,7 @@ PORT_SUMMARY = [
 # ── HID Report Format ──────────────────────────────────────────────────────────
 REPORT_ROWS = [
     ("Bytes 0–11",  "6 analog axes",  "2 bytes each, signed 16-bit, little-endian",  "12 bytes"),
-    ("Bytes 12–21", "76 digital buttons + 4-bit padding", "1 bit per button, padded to 10 bytes", "10 bytes"),
+    ("Bytes 12–21", "76 physical + 2 virtual buttons + 2-bit padding", "1 bit per button, padded to 10 bytes", "10 bytes"),
     ("Total",       "—",              "No Report ID",                                  "22 bytes"),
 ]
 
@@ -318,7 +324,7 @@ def on_later_pages(canvas, doc):
     canvas.setFont("Helvetica", 7.5)
     canvas.drawString(MARGIN, 7*mm,
         "STM32H723ZGT6 · EC Buying FK723M1-ZGT6 · Active-low logic (GND = pressed) · Internal pull-up")
-    canvas.drawRightString(PAGE_W - MARGIN, 7*mm, "76 buttons + 6 axes | v2.0")
+    canvas.drawRightString(PAGE_W - MARGIN, 7*mm, "76+2 buttons + 6 axes | v2.0")
     canvas.restoreState()
 
 # ── Build document ─────────────────────────────────────────────────────────────
@@ -347,7 +353,7 @@ def build():
         "MCU: STM32H723ZGT6 (LQFP144)  ·  Board: EC Buying FK723M1-ZGT6 V1.0",
         S_META))
     story.append(Paragraph(
-        "76 digital buttons  +  6 analog axes  ·  USB HID Custom — 22-byte report",
+        "76 physical + 2 virtual buttons  +  6 analog axes  ·  USB HID Custom — 22-byte report",
         S_META))
     story.append(Spacer(1, 10*mm))
 
@@ -357,7 +363,7 @@ def build():
             Paragraph("<b>TDU</b><br/>21 buttons<br/>BTN 01–21", _stat_style(C_TDU_HDR)),
             Paragraph("<b>LHG</b><br/>28 buttons<br/>BTN 22–47, 73–74", _stat_style(C_LHG_HDR)),
             Paragraph("<b>RHG</b><br/>27 buttons<br/>BTN 48–72, 75–76", _stat_style(C_RHG_HDR)),
-            Paragraph("<b>Total</b><br/>76 buttons<br/>+ 6 analog axes", _stat_style(C_AXS_HDR)),
+            Paragraph("<b>Total</b><br/>76+2 buttons<br/>+ 6 analog axes", _stat_style(C_AXS_HDR)),
         ]
     ]
     stats_t = Table(stats_data, colWidths=[43*mm]*4)
@@ -381,7 +387,7 @@ def build():
         "★ Highlighted rows mark newly added buttons. "
         "Active-low logic: GND = button pressed. "
         "Internal pull-up on all GPIO inputs. "
-        "76 button bits + 4-bit padding = 10 bytes.",
+        "78 button bits (76 physical + 2 virtual) + 2-bit padding = 10 bytes.",
         S_NOTE))
 
     story.append(PageBreak())
@@ -430,6 +436,22 @@ def build():
         "BTN 70 (TDU OFF) maps to the Off position of the TDU Day/NT/Off 3-position switch.  "
         "BTN 71–72 are spare/reserve inputs.  "
         "BTN 75–76 (RHG SW8/SW9) are additional normal buttons on PG0/PG1.",
+        S_NOTE))
+    story.append(Spacer(1, 6*mm))
+
+    # ══ VIRTUAL BUTTONS ═══════════════════════════════════════════════════════
+    story.append(section_header(
+        "Virtual Buttons",
+        "BTN 77–78  ·  Computed in firmware — no additional GPIO",
+        C_SUBTITLE))
+    story.append(Spacer(1, 2*mm))
+    story.append(_virtual_table())
+    story.append(Paragraph(
+        "Virtual A (BTN 77): ON = bit 1 when PF3 AND PF4 are both NOT pressed.  "
+        "virtual_A = !(PF3_pressed || PF4_pressed).  "
+        "Virtual B (BTN 78): ON = bit 1 when PD2 AND PD4 are both NOT pressed.  "
+        "virtual_B = !(PD2_pressed || PD4_pressed).  "
+        "Physical buttons (BTN 01–76) are unaffected.",
         S_NOTE))
     story.append(Spacer(1, 6*mm))
 
@@ -598,6 +620,45 @@ def _report_table():
         ("BACKGROUND",    (0,3), (-1,3), colors.HexColor("#E8EDF7")),
     ])
     for i, rc in enumerate(rcolors):
+        ts.add("BACKGROUND", (0, i+1), (-1, i+1), rc)
+    t.setStyle(ts)
+    return t
+
+
+def _virtual_table():
+    hdr_s = ParagraphStyle("th_v",
+        fontSize=8.5, fontName="Helvetica-Bold",
+        textColor=C_TXT_DARK, alignment=TA_CENTER, leading=11)
+    td_c = ParagraphStyle("td_vc",
+        fontSize=8.5, fontName="Helvetica",
+        textColor=C_TXT_DARK, alignment=TA_CENTER, leading=11)
+    td_l = ParagraphStyle("td_vl",
+        fontSize=8.5, fontName="Helvetica",
+        textColor=C_TXT_DARK, alignment=TA_LEFT, leading=11)
+
+    col_w = [18*mm, 22*mm, 20*mm, 20*mm, 92*mm]
+    data = [[Paragraph(h, hdr_s) for h in VIRTUAL_HDR]]
+    row_colors = [C_TDU_ROW1, C_TDU_ROW2]
+    for i, r in enumerate(VIRTUAL):
+        data.append([
+            Paragraph(r[0], td_c),
+            Paragraph(r[1], td_c),
+            Paragraph(r[2], td_c),
+            Paragraph(r[3], td_c),
+            Paragraph(r[4], td_l),
+        ])
+    t = Table(data, colWidths=col_w)
+    ts = TableStyle([
+        ("BACKGROUND",    (0,0), (-1,0), C_COL_HDR),
+        ("LINEBELOW",     (0,0), (-1,0), 1.2, C_SUBTITLE),
+        ("GRID",          (0,0), (-1,-1), 0.4, colors.HexColor("#D0D8E4")),
+        ("TOPPADDING",    (0,0), (-1,-1), 4),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 4),
+        ("LEFTPADDING",   (0,0), (-1,-1), 5),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 5),
+        ("VALIGN",        (0,0), (-1,-1), "MIDDLE"),
+    ])
+    for i, rc in enumerate(row_colors):
         ts.add("BACKGROUND", (0, i+1), (-1, i+1), rc)
     t.setStyle(ts)
     return t

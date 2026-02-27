@@ -109,17 +109,17 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_HS[USBD_CUSTOM_HID_REPORT_DES
   0x95, 0x06,        //   Report Count (6)
   0x81, 0x02,        //   Input (Data, Var, Abs)
 
-  // 76 buttons (76 bits + 4-bit padding = 10 bytes)
+  // 78 buttons: 76 physical + 2 virtual (78 bits + 2-bit padding = 10 bytes)
   0x05, 0x09,        //   Usage Page (Button)
   0x19, 0x01,        //   Usage Minimum (1)
-  0x29, 0x4C,        //   Usage Maximum (76)
+  0x29, 0x4E,        //   Usage Maximum (78)
   0x15, 0x00,        //   Logical Minimum (0)
   0x25, 0x01,        //   Logical Maximum (1)
   0x75, 0x01,        //   Report Size (1)
-  0x95, 0x4C,        //   Report Count (76)
+  0x95, 0x4E,        //   Report Count (78)
   0x81, 0x02,        //   Input (Data, Var, Abs)
-  // 4-bit padding to reach byte boundary (80 bits = 10 bytes total)
-  0x75, 0x04,        //   Report Size (4)
+  // 2-bit padding to reach byte boundary (80 bits = 10 bytes total)
+  0x75, 0x02,        //   Report Size (2)
   0x95, 0x01,        //   Report Count (1)
   0x81, 0x03,        //   Input (Const, Var, Abs)
 
@@ -293,7 +293,9 @@ void JOYSTICK_SendReport(void)
     report[i * 2 + 1] = (uint8_t)((val >> 8) & 0xFF);
   }
 
-  /* Pack 76 buttons into 10 bytes (76 bits + 4-bit padding, inverted logic: RESET = pressed = 1) */
+  /* Pack 78 buttons into 10 bytes (76 physical + 2 virtual, 78 bits + 2-bit padding)
+   * Physical (BTN 01-76): GPIO_PIN_RESET (LOW) = pressed = bit 1
+   * Virtual  (BTN 77-78): computed from GPIO states, ON = bit 1               */
   for (uint8_t i = 0; i < 10; i++)
   {
     report[12 + i] = 0;
@@ -305,6 +307,22 @@ void JOYSTICK_SendReport(void)
     {
       report[12 + (i / 8)] |= (1U << (i % 8));
     }
+  }
+
+  /* BTN77 Virtual A: ON when PF3 (RHG HAT1 LEFT) AND PF4 (RHG HAT1 RIGHT) are both NOT pressed
+   * virtual_A = !(PF3 pressed || PF4 pressed)  →  bit index 76 = byte 21 bit 4 */
+  if (HAL_GPIO_ReadPin(BTN_57_RHG_HAT1_LEFT_GPIO_Port,  BTN_57_RHG_HAT1_LEFT_Pin)  == GPIO_PIN_SET &&
+      HAL_GPIO_ReadPin(BTN_58_RHG_HAT1_RIGHT_GPIO_Port, BTN_58_RHG_HAT1_RIGHT_Pin) == GPIO_PIN_SET)
+  {
+    report[12 + (76 / 8)] |= (1U << (76 % 8));
+  }
+
+  /* BTN78 Virtual B: ON when PD2 (LHG SW3) AND PD4 (LHG SW5) are both NOT pressed
+   * virtual_B = !(PD2 pressed || PD4 pressed)  →  bit index 77 = byte 21 bit 5 */
+  if (HAL_GPIO_ReadPin(BTN_24_LHG_SW3_GPIO_Port, BTN_24_LHG_SW3_Pin) == GPIO_PIN_SET &&
+      HAL_GPIO_ReadPin(BTN_26_LHG_SW5_GPIO_Port, BTN_26_LHG_SW5_Pin) == GPIO_PIN_SET)
+  {
+    report[12 + (77 / 8)] |= (1U << (77 % 8));
   }
 
   USBD_CUSTOM_HID_SendReport(&hUsbDeviceHS, report, 22);
