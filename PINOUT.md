@@ -117,10 +117,13 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 | 72    | SPARE 2             | PF8       | GPIOF  | 8     |
 | 75    | RHG SW8             | PG0       | GPIOG  | 0     |
 | 76    | RHG SW9             | PG1       | GPIOG  | 1     |
+| 77    | TEST1               | PB14      | GPIOB  | 14    |
+| 78    | TEST2               | PB15      | GPIOB  | 15    |
 
 > BTN 70 corresponde a la posición **Off** del switch Day/NT/Off del TDU.
 > BTN 71–72 son entradas de reserva / spare inputs.
 > BTN 75–76 son botones normales adicionales en PG0/PG1 (GPIOG).
+> BTN 77–78 son botones de prueba en PB14/PB15 (GPIOB) para diagnóstico.
 
 ---
 
@@ -129,7 +132,7 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 | Puerto | Pines usados | Función |
 |--------|-------------|---------|
 | GPIOA  | PA2, PA3, PA6, PA7, PA11, PA12 | ADC ejes Z/Rx, ADC ejes X/Y, USB DP/DM |
-| GPIOB  | PB0–PB13 | LHG BTN 30–43 |
+| GPIOB  | PB0–PB13, PB14–PB15 | LHG BTN 30–43, TEST BTN 77–78 |
 | GPIOC  | PC0, PC1, PC4–PC7, PC10–PC13 | ADC ejes Ry/Rz, LHG BTN 44–47, RHG BTN 50–53 |
 | GPIOD  | PD0–PD12, PD13–PD14 | TDU BTN 17–21, LHG BTN 22–29, LHG BTN 73–74 |
 | GPIOE  | PE0–PE15 | TDU BTN 01–16 |
