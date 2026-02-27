@@ -90,8 +90,8 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 
 | # HID | Nombre / Name       | Pin STM32 | Puerto | Pin # |
 |-------|---------------------|-----------|--------|-------|
-| 48    | RHG SW1             | PC8       | GPIOC  | 8     |
-| 49    | RHG SW2             | PC9       | GPIOC  | 9     |
+| 48    | RHG SW1             | PF11      | GPIOF  | 11    |
+| 49    | RHG SW2             | PF12      | GPIOF  | 12    |
 | 50    | RHG SW3             | PC10      | GPIOC  | 10    |
 | 51    | RHG SW4             | PC11      | GPIOC  | 11    |
 | 52    | RHG SW5             | PC12      | GPIOC  | 12    |
@@ -130,10 +130,10 @@ Pull-up interno activo. Lógica activa en bajo (GND = presionado).
 |--------|-------------|---------|
 | GPIOA  | PA2, PA3, PA6, PA7, PA11, PA12 | ADC ejes Z/Rx, ADC ejes X/Y, USB DP/DM |
 | GPIOB  | PB0–PB13 | LHG BTN 30–43 |
-| GPIOC  | PC0, PC1, PC4–PC13 | ADC ejes Ry/Rz, LHG BTN 44–47, RHG BTN 48–53 |
+| GPIOC  | PC0, PC1, PC4–PC7, PC10–PC13 | ADC ejes Ry/Rz, LHG BTN 44–47, RHG BTN 50–53 |
 | GPIOD  | PD0–PD12, PD13–PD14 | TDU BTN 17–21, LHG BTN 22–29, LHG BTN 73–74 |
 | GPIOE  | PE0–PE15 | TDU BTN 01–16 |
-| GPIOF  | PF0–PF8 | RHG BTN 54–60, SPARE BTN 71–72 |
+| GPIOF  | PF0–PF8, PF11–PF12 | RHG BTN 48–49, RHG BTN 54–60, SPARE BTN 71–72 |
 | GPIOG  | PG0–PG1, PG6–PG15 | RHG BTN 61–70, RHG BTN 75–76 |
 
 ---

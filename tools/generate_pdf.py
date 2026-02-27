@@ -234,8 +234,8 @@ LHG = [
 ]
 
 RHG = [
-    ("48","RHG SW1",         "PC8", "GPIOC","8"),
-    ("49","RHG SW2",         "PC9", "GPIOC","9"),
+    ("48","RHG SW1",         "PF11","GPIOF","11"),
+    ("49","RHG SW2",         "PF12","GPIOF","12"),
     ("50","RHG SW3",         "PC10","GPIOC","10"),
     ("51","RHG SW4",         "PC11","GPIOC","11"),
     ("52","RHG SW5",         "PC12","GPIOC","12"),
